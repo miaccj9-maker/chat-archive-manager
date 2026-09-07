@@ -1,0 +1,312 @@
+/* ============================================================
+   聊天存档管理器 - 样式表
+   配色跟随酒馆主题（--SmartTheme* 变量），由 JS 合成实色写入
+   --cam-bg / --cam-fg / --cam-border：
+   - 全部模块强制实色不透明，只模仿主题配色，绝不出现毛玻璃
+   - 文字经 JS 对比度兜底，保证清晰可见
+   - 轻量化：无过渡、无动画、无滤镜、无阴影
+   ============================================================ */
+
+#cam-panel,
+#cam-panel * {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* ---------- 面板容器：实色底、禁毛玻璃 ---------- */
+#cam-panel {
+    /* 颜色由 JS 按当前主题合成实色写入 --cam-*，此处为纯 CSS 兜底 */
+    --cam-bg: var(--SmartThemeBlurTintColor, #1f1f1f);
+    --cam-fg: var(--SmartThemeBodyColor, #e6e6e6);
+    --cam-border: var(--SmartThemeBorderColor, #3a3a3a);
+    margin: 10px 0;
+    border: 1px solid var(--cam-border) !important;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--cam-bg) !important;
+    /* 禁止毛玻璃：无论主题是否毛玻璃风格，面板不模糊、不透底 */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+/* ---------- 标题栏 ---------- */
+#cam-panel .cam-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    background: var(--cam-bg) !important;
+    background-image: none !important;
+    color: var(--cam-fg) !important;
+    font-weight: 600;
+    border-bottom: 1px solid var(--cam-border) !important;
+    border-radius: 0 !important;
+    text-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+    user-select: none;
+}
+
+.cam-title {
+    font-size: 14px;
+}
+
+.cam-version {
+    font-size: 11px;
+    opacity: 0.65;
+    font-weight: 400;
+}
+
+/* ---------- 内容区 ---------- */
+#cam-panel .cam-content {
+    padding: 12px 16px 16px;
+    color: var(--cam-fg) !important;
+    background: transparent !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    filter: none !important;
+}
+
+/* ---------- 工具栏 ---------- */
+.cam-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.cam-refresh {
+    background: var(--cam-bg) !important;
+    background-image: none !important;
+    color: var(--cam-fg) !important;
+    border: 1px solid var(--cam-border) !important;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12px;
+    cursor: pointer;
+    backdrop-filter: none !important;
+    filter: none !important;
+}
+
+.cam-refresh:hover {
+    border-color: var(--cam-fg) !important;
+}
+
+.cam-refresh:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cam-stats {
+    font-size: 12px;
+    opacity: 0.75;
+}
+
+/* ---------- 角色档案列表 ---------- */
+.cam-char-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* 一个角色 = 一个档案文件夹 */
+.cam-char {
+    border: 1px solid var(--cam-border) !important;
+    border-radius: 6px;
+    overflow: hidden;
+    /* color-mix 不可用时的兜底（仍为实色） */
+    background: var(--cam-bg) !important;
+    background: color-mix(in srgb, var(--cam-fg) 4%, var(--cam-bg)) !important;
+    backdrop-filter: none !important;
+    filter: none !important;
+}
+
+.cam-char-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.cam-char-head:hover {
+    background: var(--cam-bg) !important;
+    background: color-mix(in srgb, var(--cam-fg) 8%, var(--cam-bg)) !important;
+}
+
+.cam-chevron {
+    font-size: 11px;
+    width: 14px;
+    flex-shrink: 0;
+    opacity: 0.8;
+}
+
+.cam-char-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--cam-fg) !important;
+}
+
+.cam-char-count {
+    flex-shrink: 0;
+    font-size: 11px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--cam-border) !important;
+    opacity: 0.85;
+}
+
+/* 展开：只切换 display，无动画开销 */
+.cam-char-body {
+    display: none;
+    max-height: 340px;
+    overflow-y: auto;
+    border-top: 1px solid var(--cam-border) !important;
+    padding: 8px;
+    flex-direction: column;
+    gap: 6px;
+    /* Firefox 轻量滚动条 */
+    scrollbar-width: thin;
+    scrollbar-color: var(--cam-border) transparent;
+}
+
+.cam-char.cam-open .cam-char-body {
+    display: flex;
+}
+
+/* ---------- 聊天存档行 ---------- */
+.cam-chat {
+    border: 1px solid var(--cam-border) !important;
+    border-radius: 6px;
+    padding: 8px 10px;
+    background: var(--cam-bg) !important;
+    backdrop-filter: none !important;
+    filter: none !important;
+}
+
+/* 当前正在使用的存档 */
+.cam-chat.cam-current {
+    border-color: var(--cam-fg) !important;
+    background: var(--cam-bg) !important;
+    background: color-mix(in srgb, var(--cam-fg) 8%, var(--cam-bg)) !important;
+}
+
+.cam-chat-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.cam-chat-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cam-fg) !important;
+}
+
+.cam-chat-sub {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.cam-current-badge {
+    font-size: 10px;
+    padding: 0 6px;
+    border-radius: 8px;
+    background: var(--cam-fg) !important;
+    color: var(--cam-bg) !important;
+    flex-shrink: 0;
+}
+
+.cam-load {
+    margin-left: auto;
+    flex-shrink: 0;
+    background: var(--cam-bg) !important;
+    background-image: none !important;
+    color: var(--cam-fg) !important;
+    border: 1px solid var(--cam-border) !important;
+    border-radius: 5px;
+    padding: 3px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    backdrop-filter: none !important;
+    filter: none !important;
+}
+
+.cam-load:hover {
+    border-color: var(--cam-fg) !important;
+}
+
+/* 最后一条消息预览：单行省略，不解析 HTML，防注入 */
+.cam-chat-preview {
+    font-size: 11px;
+    opacity: 0.8;
+    margin: 5px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--cam-fg) !important;
+}
+
+/* 备注输入框 */
+.cam-note {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 12px;
+    padding: 4px 8px;
+    background: var(--cam-bg) !important;
+    background-image: none !important;
+    color: var(--cam-fg) !important;
+    border: 1px solid var(--cam-border) !important;
+    border-radius: 4px;
+    outline: none;
+    backdrop-filter: none !important;
+    filter: none !important;
+}
+
+.cam-note::placeholder {
+    opacity: 0.5;
+}
+
+.cam-note:focus {
+    border-color: var(--cam-fg) !important;
+}
+
+/* ---------- 空状态 / 加载中 ---------- */
+.cam-empty,
+.cam-loading {
+    text-align: center;
+    padding: 18px;
+    font-size: 12px;
+    opacity: 0.7;
+    color: var(--cam-fg) !important;
+}
+
+/* ---------- 滚动条 ---------- */
+.cam-char-body::-webkit-scrollbar {
+    width: 5px;
+}
+
+.cam-char-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cam-char-body::-webkit-scrollbar-thumb {
+    background: var(--cam-border);
+    border-radius: 3px;
+}
+
+.cam-char-body::-webkit-scrollbar-thumb:hover {
+    background: var(--cam-fg);
+}
